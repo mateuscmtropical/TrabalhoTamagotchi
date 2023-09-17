@@ -46,19 +46,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center'
     },
-    registerButton: {
-        marginTop: 80,
-        borderBottomWidth: 1,
-        width: '90%',
-        alignItems: 'center'
-    }
 })
 
-const Login = ({ navigation }: any) => {
+const Register = ({ navigation }: any) => {
     const [login, setLogin] = useState<string>();
     const [senha, setSenha] = useState<string>();
 
-    const onLogin = async () => {
+    const onRegister = async () => {
         try {
             const isValid = validate(login!, senha!)
 
@@ -69,21 +63,17 @@ const Login = ({ navigation }: any) => {
                 password: senha
             }
 
-            const { data } = await axiosInstance.post('/login', loginData)
+            const { data, status } = await axiosInstance.post('/register', loginData)
 
-            if (!data.token) return Alert.alert('Erro ao realizar operação', 'Não foi possível realizar o login no momento')
+            if (!data || status !== 200) return Alert.alert('Erro ao realizar operação', 'Não foi possível criar seu usuário no momento')
 
-            navigation.navigate('Home')
+            navigation.navigate('Login')
         } catch (error) {
             const { data } = await axios.get('https://api.chucknorris.io/jokes/random')
             Alert.alert('Não foi possível efetuar o login, mas fique com um fato do Chuck Norris', data.value)
 
             console.warn(error);
         }
-    }
-
-    const onRegister = () => {
-        navigation.navigate('Register')
     }
 
     return (
@@ -100,7 +90,7 @@ const Login = ({ navigation }: any) => {
                 <View style={styles.viewInput}>
                     <Text style={styles.title}>E-mail</Text>
                     <TextInput
-                        placeholder='Digite o e-mail'
+                        placeholder='Digite o login'
                         style={styles.textInput}
                         onChangeText={setLogin}
                     />
@@ -116,16 +106,12 @@ const Login = ({ navigation }: any) => {
                     />
                 </View>
 
-                <TouchableOpacity style={styles.button} onPress={onLogin}>
-                    <Text style={styles.loginText}>Entrar</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={styles.registerButton} onPress={onRegister}>
-                    <Text style={styles.loginText}>Não possui conta? Registre-se</Text>
+                <TouchableOpacity style={styles.button} onPress={onRegister}>
+                    <Text style={styles.loginText}>Registrar-se</Text>
                 </TouchableOpacity>
             </View>
         </View>
     )
 }
 
-export default Login;
+export default Register;

@@ -1,1 +1,1 @@
-export const api = ''
+export const API_URL = 'https://tamagochiapi-clpsampedro.b4a.run'
