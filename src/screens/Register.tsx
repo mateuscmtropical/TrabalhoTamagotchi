@@ -46,12 +46,36 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center'
     },
+    errorInput: {
+        borderBottomWidth: 1,
+        height: 40,
+        marginBottom: 12,
+        fontSize: 16,
+        color: 'red',
+    },
+    errorMessage: {
+        color: 'red',
+    },
 })
 
 const Register = ({ navigation }: any) => {
     const [login, setLogin] = useState<string>();
     const [senha, setSenha] = useState<string>();
     const [confirmarSenha, setConfirmarSenha] = useState<string>();
+    const [isEmailValid, setIsEmailValid] = useState<boolean>(true);
+    const [errorMessage, setErrorMessage] = useState<string>('');
+
+    const validateEmail = () => {
+        const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+
+        if (!emailRegex.test(String(login))) {
+            setIsEmailValid(false);
+            setErrorMessage('Email inválido');
+        } else {
+            setIsEmailValid(true);
+            setErrorMessage('');
+        }
+    };
 
     const onRegister = async () => {
         try {
@@ -96,7 +120,9 @@ const Register = ({ navigation }: any) => {
                         placeholder='Digite o login'
                         style={styles.textInput}
                         onChangeText={setLogin}
+                        onBlur={validateEmail}
                     />
+                    {!isEmailValid && <Text style={styles.errorMessage}>{errorMessage}</Text>}
                 </View>
 
                 <View style={styles.viewInput}>

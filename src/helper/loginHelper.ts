@@ -1,4 +1,6 @@
 export const validate = (login: string, senha: string, confirmarSenha?: string) => {
+    const validEmail = /^[a-z0-9.]+@[a-z0-9]+\.[a-z]+\.([a-z]+)?$/i;
+
     if (typeof login !== 'string' || login.length === 0 || login.length > 200) {
         return false
     }

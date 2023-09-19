@@ -51,15 +51,41 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         width: '90%',
         alignItems: 'center'
-    }
+    },
+    errorInput: {
+        borderBottomWidth: 1,
+        height: 40,
+        marginBottom: 12,
+        fontSize: 16,
+        color: 'red',
+    },
+    errorMessage: {
+        color: 'red',
+    },
 })
 
 const Login = ({ navigation }: any) => {
     const [login, setLogin] = useState<string>();
     const [senha, setSenha] = useState<string>();
+    const [isEmailValid, setIsEmailValid] = useState<boolean>(true);
+    const [errorMessage, setErrorMessage] = useState<string>('');
+
+    const validateEmail = () => {
+        const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+
+        if (!emailRegex.test(String(login))) {
+            setIsEmailValid(false);
+            setErrorMessage('Email inválido');
+        } else {
+            setIsEmailValid(true);
+            setErrorMessage('');
+        }
+    };
 
     const onLogin = async () => {
         try {
+            if (!isEmailValid) return Alert.alert('Valor inválido', 'E-mail é inválido')
+
             const isValid = validate(login!, senha!)
 
             if (!isValid) return Alert.alert('Valor inválido', 'O valor passado em login/senha está incorreto')
@@ -106,7 +132,9 @@ const Login = ({ navigation }: any) => {
                         placeholder='Digite o e-mail'
                         style={styles.textInput}
                         onChangeText={setLogin}
+                        onBlur={validateEmail}
                     />
+                    {!isEmailValid && <Text style={styles.errorMessage}>{errorMessage}</Text>}
                 </View>
 
                 <View style={styles.viewInput}>
