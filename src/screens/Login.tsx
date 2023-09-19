@@ -1,8 +1,8 @@
-import axios from 'axios';
 import React, { useState } from 'react';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View, ImageBackground, Alert } from 'react-native';
 import axiosInstance from '../config/axios';
 import { validate } from '../helper/loginHelper';
+import storeData from '../config/asyncStorage';
 
 const styles = StyleSheet.create({
     container: {
@@ -73,12 +73,16 @@ const Login = ({ navigation }: any) => {
 
             if (!data.token) return Alert.alert('Erro ao realizar operação', 'Não foi possível realizar o login no momento')
 
+            storeData(data.token)
+
             navigation.navigate('Home')
-        } catch (error) {
-            const { data } = await axios.get('https://api.chucknorris.io/jokes/random')
-            Alert.alert('Não foi possível efetuar o login, mas fique com um fato do Chuck Norris', data.value)
+        } catch (error: any) {
+
+            if (error.response?.status === 401) return Alert.alert('Erro ao realizar a operação', error.response?.data.message)
 
             console.warn(error);
+
+            return Alert.alert('Não foi possível realizar o login')
         }
     }
 

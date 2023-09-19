@@ -51,12 +51,15 @@ const styles = StyleSheet.create({
 const Register = ({ navigation }: any) => {
     const [login, setLogin] = useState<string>();
     const [senha, setSenha] = useState<string>();
+    const [confirmarSenha, setConfirmarSenha] = useState<string>();
 
     const onRegister = async () => {
         try {
             const isValid = validate(login!, senha!)
 
             if (!isValid) return Alert.alert('Valor inválido', 'O valor passado em login/senha está incorreto')
+
+            if (confirmarSenha !== senha) return Alert.alert('Valor inválido', 'As senhas não estão iguais')
 
             const loginData = {
                 email: login,
@@ -102,6 +105,16 @@ const Register = ({ navigation }: any) => {
                         placeholder='Digite a senha'
                         style={styles.textInput}
                         onChangeText={setSenha}
+                        secureTextEntry={true}
+                    />
+                </View>
+
+                <View style={styles.viewInput}>
+                    <Text style={styles.title}>Confirmar senha</Text>
+                    <TextInput
+                        placeholder='Digite a confirmação de senha'
+                        style={styles.textInput}
+                        onChangeText={setConfirmarSenha}
                         secureTextEntry={true}
                     />
                 </View>
