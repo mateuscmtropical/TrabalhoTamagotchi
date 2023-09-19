@@ -77,7 +77,6 @@ const Login = ({ navigation }: any) => {
 
             navigation.navigate('Home')
         } catch (error: any) {
-
             if (error.response?.status === 401) return Alert.alert('Erro ao realizar a operação', error.response?.data.message)
 
             console.warn(error);
