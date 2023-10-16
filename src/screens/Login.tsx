@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View, ImageBackground, Alert } from 'react-native';
 import axiosInstance from '../config/axios';
 import { validate } from '../helper/loginHelper';
 import storeData from '../config/asyncStorage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const styles = StyleSheet.create({
     container: {
@@ -70,6 +71,12 @@ const Login = ({ navigation }: any) => {
     const [isEmailValid, setIsEmailValid] = useState<boolean>(true);
     const [errorMessage, setErrorMessage] = useState<string>('');
 
+    const hasToken = async () => {
+        const token = await AsyncStorage.getItem('token');
+
+        if (token) navigation.navigate('Home')
+    }
+
     const validateEmail = () => {
         const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 
@@ -115,6 +122,10 @@ const Login = ({ navigation }: any) => {
         navigation.navigate('Register')
     }
 
+    useEffect(() => {
+        hasToken()
+    }, [])
+
     return (
         <View style={styles.container}>
             <View>
@@ -134,7 +145,11 @@ const Login = ({ navigation }: any) => {
                         onChangeText={setLogin}
                         onBlur={validateEmail}
                     />
-                    {!isEmailValid && <Text style={styles.errorMessage}>{errorMessage}</Text>}
+                    {
+                        !isEmailValid && <Text style={styles.errorMessage}>
+                            {errorMessage}
+                        </Text>
+                    }
                 </View>
 
                 <View style={styles.viewInput}>

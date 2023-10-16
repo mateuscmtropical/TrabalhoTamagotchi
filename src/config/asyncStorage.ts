@@ -4,7 +4,7 @@ import axiosInstance from "./axios";
 
 const storeData = async (token: string) => {
     try {
-        await AsyncStorage.setItem('token', `Bearer ${token}`);
+        await AsyncStorage.setItem('token', `${token}`);
     } catch (error) {
         console.warn(error)
 
