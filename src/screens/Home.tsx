@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { colors } from '../styles/styles';
 import { Modal, Portal, TextInput, Title } from 'react-native-paper';
 import Icon from "react-native-vector-icons/AntDesign";
+import { NavigationProp, ParamListBase } from '@react-navigation/native';
 
 const { buttonReload, buttonLogout, tertiary, primary } = colors;
 
@@ -57,13 +58,13 @@ const styles = StyleSheet.create({
         bottom: 15,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: tertiary,
     },
     buttonCreatePet: {
         height: 60,
         width: '93%',
         borderWidth: 1,
         borderRadius: 10,
+        backgroundColor: 'white',
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -116,6 +117,9 @@ const Home = ({ navigation }: any) => {
             const errorResponse = error as AxiosError;
 
             console.warn(errorResponse.response);
+
+            if (errorResponse.response?.status === 401) return navigation.navigate('Login')
+
             return null;
         }
     }, [])
@@ -183,10 +187,14 @@ const Home = ({ navigation }: any) => {
 
     const reloadPage = () => {
         getPets()
+        navigation.navigate('Home')
     }
 
     useEffect(() => {
         getPets()
+        setInterval(() => {
+            getPets()
+        }, 60000)
     }, [])
 
     return (
@@ -205,10 +213,10 @@ const Home = ({ navigation }: any) => {
                     <Text style={{ color: tertiary }}>Reload</Text>
                 </TouchableOpacity>
             </View>
-            <View style={{ marginTop: 15 }}>
+            <View style={{ marginTop: 15, marginBottom: 160 }}>
                 <FlatList
                     data={pets}
-                    renderItem={({ item }) => <PetCard pet={item} />}
+                    renderItem={({ item }) => <PetCard pet={item} reload={reloadPage} />}
                 />
             </View>
             <View style={styles.createPetContainer}>
