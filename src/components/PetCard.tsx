@@ -48,7 +48,7 @@ const PetCard = ({ pet }: { pet: Pet }, { navigation }: any) => {
     const [healthImage, setHealthImage] = useState<AvatarImageSource>(require('../public/images/h100.png'));
     const [foodImage, setFoodImage] = useState<AvatarImageSource>(require('../public/images/f100.png'));
     const [isDialogVisible, setIsDialogVisible] = useState(false);
-    const truncatedName = pet.name.length > 7 ? pet.name.substring(0, 7) + "..." : pet.name;
+    const truncatedName = pet.name.length > 4 ? pet.name.substring(0, 4) + "..." : pet.name;
 
     const healthImagePath = (healthPoints: number) => {
         let healthImage = require('../public/images/h100.png');
@@ -88,7 +88,6 @@ const PetCard = ({ pet }: { pet: Pet }, { navigation }: any) => {
                                 name='close'
                                 color='black'
                                 size={40}
-                                style={styles.deleteIcon}
                             />
                         </TouchableOpacity>
                         <Text>Conteúdo do diálogo</Text>

@@ -1,11 +1,15 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Button, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Button, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import PetCard from '../components/PetCard';
 import axiosInstance from '../config/axios';
 import { AxiosError } from 'axios';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { colors } from '../styles/styles';
+import { Modal, Portal, TextInput, Title } from 'react-native-paper';
+import Icon from "react-native-vector-icons/AntDesign";
+
+const { buttonReload, buttonLogout, tertiary, primary } = colors;
 
 export type Pet = {
     id: number;
@@ -47,27 +51,59 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    createPettContainer: {
+    createPetContainer: {
         width: '100%',
+        position: 'absolute',
         bottom: 15,
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: tertiary,
     },
-    buttonCreatePett: {
-        position: 'absolute',
+    buttonCreatePet: {
         height: 60,
         width: '93%',
         borderWidth: 1,
         borderRadius: 10,
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    closeButton: {
+        position: 'absolute',
+        top: 5,
+        right: 5,
+    },
+    dialogContent: {
+        padding: 20,
+        backgroundColor: 'white',
+        borderRadius: 10,
+        height: 300,
+    },
+    inputContainer: {
+        marginTop: 50,
+        gap: 30,
+    },
+    textInput: {
+        height: 40,
+        fontSize: 16,
+        color: 'black',
+        marginBottom: 12,
+        borderBottomWidth: 1,
+        backgroundColor: 'white',
+    },
+    createPetInput: {
+        height: 60,
+        width: '100%',
+        borderWidth: 1,
+        borderRadius: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
     }
 })
 
-const { buttonReload, buttonLogout, tertiary } = colors;
-
 const Home = ({ navigation }: any) => {
     const [pets, setPets] = useState<Pet[]>()
+    const [petData, setPetData] = useState<string>()
+    const [isDialogVisible, setIsDialogVisible] = useState(false);
 
     const getPets = useCallback(async () => {
         try {
@@ -83,6 +119,62 @@ const Home = ({ navigation }: any) => {
             return null;
         }
     }, [])
+
+    const createPet = async () => {
+        try {
+            const requestData = {
+                name: petData
+            }
+
+            const { data } = await axiosInstance.post('/pet', requestData)
+
+            if (!data) return Alert.alert('Não foi possível realizar o cadastro do pet')
+
+            getPets()
+            setIsDialogVisible(false)
+        } catch (error) {
+            console.warn(error);
+            return Alert.alert('Não foi possível realizar o cadastro do pet')
+        }
+    }
+
+    const showDialog = () => {
+        setIsDialogVisible(true);
+    }
+
+    const hideDialog = () => {
+        setIsDialogVisible(false);
+    }
+
+    const dialogContent = () => {
+        return (
+            <Portal>
+                <Modal visible={isDialogVisible} onDismiss={hideDialog} style={{ margin: 15 }}>
+                    <View style={styles.dialogContent}>
+                        <TouchableOpacity onPress={hideDialog} style={styles.closeButton}>
+                            <Icon
+                                name='close'
+                                color='black'
+                                size={40}
+                            />
+                        </TouchableOpacity>
+                        <Title style={{ color: 'black' }}>Cadastro de pet</Title>
+                        <View style={styles.inputContainer}>
+                            <TextInput
+                                placeholder='Digite o nome do pet'
+                                style={styles.textInput}
+                                onChangeText={setPetData}
+                            />
+
+                            <TouchableOpacity style={styles.createPetInput} onPress={createPet}>
+                                <Text style={{ color: 'black' }}>Cadastrar</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </Modal>
+            </Portal>
+        )
+    }
 
     const logout = async () => {
         await AsyncStorage.removeItem('token')
@@ -113,20 +205,21 @@ const Home = ({ navigation }: any) => {
                     <Text style={{ color: tertiary }}>Reload</Text>
                 </TouchableOpacity>
             </View>
-            <View>
+            <View style={{ marginTop: 15 }}>
                 <FlatList
                     data={pets}
                     renderItem={({ item }) => <PetCard pet={item} />}
                 />
             </View>
-            <View style={styles.createPettContainer}>
+            <View style={styles.createPetContainer}>
                 <TouchableOpacity
-                    style={[styles.buttonCreatePett, { backgroundColor: buttonLogout }]}
-                    onPress={logout}
+                    style={styles.buttonCreatePet}
+                    onPress={showDialog}
                 >
-                    <Text style={{ color: tertiary }}>Adicionar Pet</Text>
+                    <Text style={{ color: primary }}>Adicionar Pet</Text>
                 </TouchableOpacity>
             </View>
+            {dialogContent()}
         </SafeAreaView>
     );
 }
