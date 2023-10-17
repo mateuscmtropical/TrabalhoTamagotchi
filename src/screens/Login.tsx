@@ -108,7 +108,7 @@ const Login = ({ navigation }: any) => {
 
             storeData(data.token)
 
-            navigation.navigate('Home')
+            navigation.replace('Home')
         } catch (error: any) {
             if (error.response?.status === 401) return Alert.alert('Erro ao realizar a operação', error.response?.data.message)
 

@@ -80,18 +80,15 @@ const styles = StyleSheet.create({
     }
 })
 
-enum PET_ACTIONS {
-    food = 'food',
-    rest = 'rest',
-    play = 'play',
-}
-
 const PetCard = ({ pet, reload }: { pet: Pet, reload: Function }) => {
     const [healthImage, setHealthImage] = useState<AvatarImageSource>(require('../public/images/h100.png'));
     const [foodImage, setFoodImage] = useState<AvatarImageSource>(require('../public/images/f100.png'));
     const [isDialogVisible, setIsDialogVisible] = useState(false);
     const [isActionsVisible, setIsActionsVisible] = useState(false);
     const [petNameEdit, setPetNameEdit] = useState(pet.name)
+    const [rest, setRest] = useState<number>(pet.restLevel);
+    const [play, setPlay] = useState<number>(pet.funLevel);
+    const [food, setFood] = useState<number>(pet.foodLevel);
     const truncatedName = pet.name.length > 4 ? pet.name.substring(0, 4) + "..." : pet.name;
 
     const editPet = async () => {
@@ -114,9 +111,9 @@ const PetCard = ({ pet, reload }: { pet: Pet, reload: Function }) => {
 
         const { data } = await axiosInstance.post(`/pet/${pet.id}/food`, requestData)
 
-        if (!data) if (!data) return Alert.alert('Não foi possível realizar a edição do pet')
+        if (!data) return Alert.alert('Não foi possível realizar a edição do pet')
 
-        reload()
+        setFood(data.foodLevel)
         setIsDialogVisible(false)
     }
 
@@ -127,9 +124,9 @@ const PetCard = ({ pet, reload }: { pet: Pet, reload: Function }) => {
 
         const { data } = await axiosInstance.post(`/pet/${pet.id}/rest`, requestData)
 
-        if (!data) if (!data) return Alert.alert('Não foi possível realizar a edição do pet')
+        if (!data) return Alert.alert('Não foi possível realizar a edição do pet')
 
-        reload()
+        setRest(data.restLevel)
         setIsDialogVisible(false)
     }
 
@@ -140,9 +137,9 @@ const PetCard = ({ pet, reload }: { pet: Pet, reload: Function }) => {
 
         const { data } = await axiosInstance.post(`/pet/${pet.id}/play`, requestData)
 
-        if (!data) if (!data) return Alert.alert('Não foi possível realizar a edição do pet')
+        if (!data) return Alert.alert('Não foi possível realizar a edição do pet')
 
-        reload()
+        setPlay(data.funLevel)
         setIsDialogVisible(false)
     }
 
@@ -179,6 +176,7 @@ const PetCard = ({ pet, reload }: { pet: Pet, reload: Function }) => {
     }
 
     const hidePetActions = () => {
+        reload()
         setIsActionsVisible(false);
     }
 
@@ -227,23 +225,35 @@ const PetCard = ({ pet, reload }: { pet: Pet, reload: Function }) => {
                                 size={40}
                             />
                         </TouchableOpacity>
-                        <Title style={{ color: 'black', marginTop: 15 }}>Cuidados com o pet: {pet.name}</Title>
+                        <View style={{ alignItems: 'center', marginTop: 15 }}>
+                            <Image source={require('../public/images/pets.png')} />
+                            <Title>{pet.name}</Title>
+                        </View>
                         <View >
                             <View style={styles.petContainer}>
-                                <Title>Alimentar pet</Title>
-                                <TouchableOpacity style={styles.petButton} onPress={petFood}>
+                                <View>
+                                    <Title>Alimentar pet</Title>
+                                    <Text>Fome: {food.toFixed(2)}</Text>
+                                </View>
+                                <TouchableOpacity style={styles.petButton} onPress={() => petFood()}>
                                     <Text style={{ color: 'black' }}>Alimentar</Text>
                                 </TouchableOpacity>
                             </View>
                             <View style={styles.petContainer}>
-                                <Title>Brincar com pet</Title>
-                                <TouchableOpacity style={styles.petButton} onPress={petRest}>
+                                <View>
+                                    <Title>Brincar com pet</Title>
+                                    <Text>Entediamento: {play.toFixed(2)}</Text>
+                                </View>
+                                <TouchableOpacity style={styles.petButton} onPress={petPlay}>
                                     <Text style={{ color: 'black' }}>Brincar</Text>
                                 </TouchableOpacity>
                             </View>
                             <View style={styles.petContainer}>
-                                <Title>Descansar pet</Title>
-                                <TouchableOpacity style={styles.petButton} onPress={petPlay}>
+                                <View>
+                                    <Title>Descansar pet</Title>
+                                    <Text>Cansaço: {rest.toFixed(2)}</Text>
+                                </View>
+                                <TouchableOpacity style={styles.petButton} onPress={petRest}>
                                     <Text style={{ color: 'black' }}>Descansar</Text>
                                 </TouchableOpacity>
                             </View>

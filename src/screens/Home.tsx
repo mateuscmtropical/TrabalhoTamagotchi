@@ -183,11 +183,17 @@ const Home = ({ navigation }: any) => {
     const logout = async () => {
         await AsyncStorage.removeItem('token')
         navigation.navigate('Login')
+        navigation.reset({
+            index: 0,
+            routes: [{ name: 'Login ' }]
+        })
     }
 
     const reloadPage = () => {
-        getPets()
-        navigation.navigate('Home')
+        navigation.reset({
+            index: 0,
+            routes: [{ name: 'Home' }]
+        })
     }
 
     useEffect(() => {
