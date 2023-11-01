@@ -167,6 +167,7 @@ const Home = ({ navigation }: any) => {
                             <TextInput
                                 placeholder='Digite o nome do pet'
                                 style={styles.textInput}
+                                placeholderTextColor='black'
                                 onChangeText={setPetData}
                             />
 

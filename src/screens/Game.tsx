@@ -100,6 +100,7 @@ const Game = ({ route, navigation }: { route: any, navigation: any }) => {
                 <TextInput
                     placeholder='Digite um número de entre 1 e 9'
                     style={styles.textInput}
+                    placeholderTextColor='black'
                     onChangeText={setUserNambers}
                     keyboardType='number-pad'
                     maxLength={1}
@@ -135,7 +136,7 @@ const Game = ({ route, navigation }: { route: any, navigation: any }) => {
                                         color={sorterNumbers === Number(userNumbers) ? 'green' : 'red'}
                                         size={100}
                                     />
-                                    <Text>{sorterNumbers === Number(userNumbers) ? 'Você acertou!' : 'Os números não conferem,'} o número sorteado foi: {sorterNumbers}</Text>
+                                    <Text style={{ color: 'black' }}>{sorterNumbers === Number(userNumbers) ? 'Você acertou!' : 'Os números não conferem,'} o número sorteado foi: {sorterNumbers}</Text>
                                 </View>
                             )}
                         </View>
