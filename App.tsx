@@ -5,6 +5,7 @@ import React from 'react';
 import Login from './src/screens/Login';
 import Home from './src/screens/Home';
 import Register from './src/screens/Register';
+import Game from './src/screens/Game';
 
 const theme = {
   ...DefaultTheme,
@@ -23,6 +24,13 @@ function App(): JSX.Element {
           <Stack.Screen
             name='Home'
             component={Home}
+            options={{
+              headerShown: false
+            }}
+          />
+          <Stack.Screen
+            name='Game'
+            component={Game}
             options={{
               headerShown: false
             }}

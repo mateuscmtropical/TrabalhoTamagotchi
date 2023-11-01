@@ -222,7 +222,7 @@ const Home = ({ navigation }: any) => {
             <View style={{ marginTop: 15, marginBottom: 160 }}>
                 <FlatList
                     data={pets}
-                    renderItem={({ item }) => <PetCard pet={item} reload={reloadPage} />}
+                    renderItem={({ item }) => <PetCard pet={item} reload={reloadPage} navigation={navigation} />}
                 />
             </View>
             <View style={styles.createPetContainer}>

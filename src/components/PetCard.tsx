@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     }
 })
 
-const PetCard = ({ pet, reload }: { pet: Pet, reload: Function }) => {
+const PetCard = ({ pet, reload, navigation }: { pet: Pet, reload: Function, navigation: any }) => {
     const [healthImage, setHealthImage] = useState<AvatarImageSource>(require('../public/images/h100.png'));
     const [foodImage, setFoodImage] = useState<AvatarImageSource>(require('../public/images/f100.png'));
     const [isDialogVisible, setIsDialogVisible] = useState(false);
@@ -131,16 +131,8 @@ const PetCard = ({ pet, reload }: { pet: Pet, reload: Function }) => {
     }
 
     const petPlay = async () => {
-        const requestData = {
-            name: petNameEdit
-        }
-
-        const { data } = await axiosInstance.post(`/pet/${pet.id}/play`, requestData)
-
-        if (!data) return Alert.alert('Não foi possível realizar a edição do pet')
-
-        setPlay(data.funLevel)
-        setIsDialogVisible(false)
+        setIsActionsVisible(false)
+        navigation.navigate('Game', { pet: pet })
     }
 
     const healthImagePath = (healthPoints: number) => {
@@ -250,7 +242,7 @@ const PetCard = ({ pet, reload }: { pet: Pet, reload: Function }) => {
                             </View>
                             <View style={styles.petContainer}>
                                 <View>
-                                    <Title>Descansar pet</Title>
+                                    <Title>Descansar o pet</Title>
                                     <Text>Cansaço: {rest.toFixed(2)}</Text>
                                 </View>
                                 <TouchableOpacity style={styles.petButton} onPress={petRest}>
