@@ -61,7 +61,10 @@ const Game = ({ route, navigation }: { route: any, navigation: any }) => {
     const [isDialogVisible, setIsDialogVisible] = useState(false)
 
     const navigateToHome = () => {
-        navigation.navigate('Home')
+        navigation.reset({
+            index: 0,
+            routes: [{ name: 'Home ' }]
+        })
     }
 
     const handlePlay = async () => {
